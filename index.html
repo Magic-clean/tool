@@ -325,9 +325,29 @@ body.focus-mode .focus-btn{display:flex;align-items:center;gap:6px}
 .fav-item:hover{border-color:var(--accent);color:var(--accent)}
 .fav-item .fav-icon{font-size:13px}
 .favs-label{font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+/* ── MOBILE ─────────────────────────────────────── */
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-224px;top:0;bottom:0;z-index:300;transition:left .25s ease;box-shadow:none}
+  .sidebar.open{left:0;box-shadow:4px 0 20px rgba(0,0,0,.4)}
+  .main{margin-left:0!important}
+  #mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:299}
+  #mob-overlay.show{display:block}
+  #hamburger{display:flex}
+  .ph{padding-left:52px!important}
+}
+#hamburger{display:none;position:fixed;top:12px;left:12px;z-index:400;
+  background:var(--accent);border:none;border-radius:8px;
+  width:38px;height:38px;align-items:center;justify-content:center;
+  cursor:pointer;flex-direction:column;gap:5px;padding:8px}
+#hamburger span{display:block;width:20px;height:2px;background:white;border-radius:2px;transition:all .2s}
 </style>
 </head>
 <body>
+<!-- MOBILE HAMBURGER -->
+<button id="hamburger" onclick="toggleMobSidebar()">
+  <span></span><span></span><span></span>
+</button>
+<div id="mob-overlay" onclick="toggleMobSidebar()"></div>
 <!-- FOCUS MODE EXIT BUTTON -->
 <button class="focus-btn" onclick="toggleFocusMode()">✕ Fokus verlassen</button>
 
@@ -4159,6 +4179,31 @@ function addDocLine(d){
     if(!cont._ddInit){cont._ddInit=true;initDragDrop(cont);}
   }catch(e){}
 }
+
+// ── MOBILE SIDEBAR ──────────────────────────────
+function toggleMobSidebar(){
+  const sb=document.querySelector('.sidebar');
+  const ov=document.getElementById('mob-overlay');
+  const hb=document.getElementById('hamburger');
+  const open=sb.classList.toggle('open');
+  ov.classList.toggle('show',open);
+  hb.style.opacity=open?'0':'1';
+}
+// Close sidebar when nav item clicked on mobile
+document.addEventListener('DOMContentLoaded',function(){
+  if(window.innerWidth<=768){
+    document.querySelectorAll('.nav-item').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        const sb=document.querySelector('.sidebar');
+        const ov=document.getElementById('mob-overlay');
+        const hb=document.getElementById('hamburger');
+        sb.classList.remove('open');
+        ov.classList.remove('show');
+        hb.style.opacity='1';
+      });
+    });
+  }
+});
 
 // Phase 1+2+3 Init
 initDarkMode();
